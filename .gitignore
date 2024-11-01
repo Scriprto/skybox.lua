@@ -1,41 +1,29 @@
-# Compiled Lua sources
-luac.out
+-- Server Script to Change Skybox in Roblox using a single decal asset
 
-# luarocks build files
-*.src.rock
-*.zip
-*.tar.gz
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-# Object files
-*.o
-*.os
-*.ko
-*.obj
-*.elf
+-- Create a RemoteEvent for skybox change requests if it doesn't already exist
+local changeSkyboxEvent = ReplicatedStorage:FindFirstChild("ChangeSkyboxEvent") or Instance.new("RemoteEvent")
+changeSkyboxEvent.Name = "ChangeSkyboxEvent"
+changeSkyboxEvent.Parent = ReplicatedStorage
 
-# Precompiled Headers
-*.gch
-*.pch
+-- Function to change the skybox using the specified decal asset for all sides
+local function changeSkyboxWithDecal()
+    -- Create a new Sky instance
+    local newSky = Instance.new("Sky")
+    newSky.SkyboxBk = "rbxassetid://82122896351813" -- Back
+    newSky.SkyboxDn = "rbxassetid://82122896351813" -- Down
+    newSky.SkyboxFt = "rbxassetid://82122896351813" -- Front
+    newSky.SkyboxLf = "rbxassetid://82122896351813" -- Left
+    newSky.SkyboxRt = "rbxassetid://82122896351813" -- Right
+    newSky.SkyboxUp = "rbxassetid://82122896351813" -- Up
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.def
-*.exp
+    -- Set the new sky in the Lighting
+    game.Lighting:ClearAllChildren() -- Clear existing skies
+    newSky.Parent = game.Lighting -- Set new sky in Lighting
+end
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
+-- Connect the event to the function
+changeSkyboxEvent.OnServerEvent:Connect(function()
+    changeSkyboxWithDecal()
+end)
